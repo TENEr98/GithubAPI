@@ -25,7 +25,7 @@ body {
 
 .content {
   min-height: 16rem;
-  width: 26rem;
+  width: 36rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -92,12 +92,15 @@ body {
 
 .auto-item:focus {
   height: 2.125rem;
+  font-size: 1.125rem;
+  vertical-align: middle;
+  line-height: 1.5;
 }
 
 .list {
   display: flex;
   flex-direction: column;
-  width: 16rem;
+  width: 24rem;
   margin-top: 0.5rem;
 }
 .list-item {
@@ -123,27 +126,27 @@ body {
   margin-bottom: 0.375rem;
 }
 
-.item-name p,
-.item-owner p,
-.item-stars p {
+.item-name span,
+.item-owner span,
+.item-stars span {
   margin: 0;
 }
-.item-name p:first-child,
-.item-owner p:first-child,
-.item-stars p:first-child {
+.item-name span:first-child,
+.item-owner span:first-child,
+.item-stars span:first-child {
   color: #cfd2d6;
   font: 400 1.125rem "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.item-name p:first-child:after,
-.item-owner p:first-child::after,
-.item-stars p:first-child::after {
+.item-name span:first-child:after,
+.item-owner span:first-child::after,
+.item-stars span:first-child::after {
   content: ":";
 }
 
-.item-name p:last-child,
-.item-owner p:last-child,
-.item-stars p:last-child {
+.item-name span:last-child,
+.item-owner span:last-child,
+.item-stars span:last-child {
   color: #cfd2d6;
   font: 600 1.125rem "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
