@@ -151,7 +151,6 @@ const createSavedList = () => {
 const createAutocompleteList = (items) => {
   clearAutocomplete();
   searchList.length = 0;
-  console.log(searchList);
   items.forEach((item) => {
     const {
       name,
