@@ -57,15 +57,20 @@ const clearAutocomplete = () => {
 
 const onChange = (event) => {
   if (event.target.value.length === 0) {
-    error.innerHTML = "";
     clearAutocomplete();
     return;
   }
+  error.innerHTML = "";
   fetch(
     "https://api.github.com/search/repositories?per_page=5&q=" +
       event.target.value
   )
-    .then((res) => res.json())
+    .then((res) => {
+      if (res.ok) {
+        return res.json();
+      }
+      return Promise.reject(res);
+    })
     .then((response) => {
       const { items } = response;
       if (Array.isArray(items) && items.length === 0) {
@@ -77,7 +82,8 @@ const onChange = (event) => {
       }
     })
     .catch((err) => {
-      console.log(err);
+      error.style.display = "block";
+      error.innerHTML = "Проблема слишком много запросов";
     });
 };
 
