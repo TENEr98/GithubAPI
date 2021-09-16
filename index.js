@@ -59,6 +59,7 @@ const onChange = (event) => {
   if (event.target.value.length === 0) {
     error.innerHTML = "";
     clearAutocomplete();
+    return;
   }
   fetch(
     "https://api.github.com/search/repositories?per_page=5&q=" +
@@ -148,6 +149,27 @@ const createSavedList = () => {
   });
 };
 
+const createAutocompleteEl = () => {
+  searchList.forEach((el) => {
+    const searchedItem = createDOMElement("span", {
+      classList: ["auto-item"],
+      innerHTML: el.name,
+      tabIndex: "0",
+      onclick: (event) => {
+        savedList.push(el);
+        createSavedList(event);
+      },
+      onkeyup: (event) => {
+        if (event.keyCode === 13) {
+          savedList.push(el);
+          createSavedList(event);
+        }
+      },
+    });
+    autocompleteContainer.appendChild(searchedItem);
+  });
+};
+
 const createAutocompleteList = (items) => {
   clearAutocomplete();
   searchList.length = 0;
@@ -167,25 +189,7 @@ const createAutocompleteList = (items) => {
 
   autocompleteContainer.classList.add("active");
   inputSearch.insertAdjacentElement("afterend", autocompleteContainer);
-  searchList.forEach((el) => {
-    const autocompleteItem = document.createElement("span");
-    autocompleteItem.innerHTML = el.name;
-    autocompleteItem.classList.add("auto-item");
-    autocompleteItem.setAttribute("tabindex", "0");
-    autocompleteItem.addEventListener("click", (event) => {
-      if (event.type === "click") {
-        savedList.push(el);
-        createSavedList(event);
-      }
-    });
-    autocompleteItem.addEventListener("keyup", (event) => {
-      if (event.keyCode === 13) {
-        savedList.push(el);
-        createSavedList(event);
-      }
-    });
-    autocompleteContainer.appendChild(autocompleteItem);
-  });
+  createAutocompleteEl();
 };
 
 onChangeDebounce = debounce(onChange, 180);
