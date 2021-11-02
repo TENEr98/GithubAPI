@@ -198,7 +198,7 @@ const createAutocompleteList = (items) => {
   createAutocompleteEl();
 };
 
-onChangeDebounce = debounce(onChange, 180);
+const onChangeDebounce = debounce(onChange, 180);
 
 inputSearch.addEventListener("keyup", onChangeDebounce);
 inputSearch.addEventListener("search", onSearchButton);
