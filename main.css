@@ -44,6 +44,8 @@ body {
 }
 
 .search-label {
+  padding-left: 0.25rem;
+  margin-bottom: 0.5rem;
   color: #cfd2d6;
   font: 500 0.875rem/1.5 "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
@@ -151,6 +153,7 @@ body {
 .item-stars span:last-child {
   color: #cfd2d6;
   font: 600 1.125rem "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin-left: 0.25rem;
 }
 
 .item-trash .trash {
