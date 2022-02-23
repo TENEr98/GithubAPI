@@ -1,204 +1,204 @@
-const inputSearch = document.getElementById("search");
-const autocompleteContainer = document.getElementById("autocomplete");
-const listContainer = document.getElementById("list");
-const error = document.getElementById("error");
+const inputSearch = document.getElementById('search')
+const autocompleteContainer = document.getElementById('autocomplete')
+const listContainer = document.getElementById('list')
+const error = document.getElementById('error')
 
-const searchList = [];
-const savedList = [];
+const searchList = []
+const savedList = []
 
 const debounce = (fn, ms) => {
-  let timeout;
+  let timeout
   return function () {
-    const fnCall = () => fn.apply(this, arguments);
-    clearTimeout(timeout);
-    timeout = setTimeout(fnCall, ms);
-  };
-};
+    const fnCall = () => fn.apply(this, arguments)
+    clearTimeout(timeout)
+    timeout = setTimeout(fnCall, ms)
+  }
+}
 
 const createDOMElement = (tag, params) => {
-  const newElement = document.createElement(tag);
+  const newElement = document.createElement(tag)
   Object.keys(params).forEach((key) => {
     switch (key) {
-      case "classList": {
+      case 'classList': {
         params.classList.forEach((className) =>
           newElement.classList.add(className)
-        );
-        break;
+        )
+        break
       }
-      case "for":
-      case "style": {
-        newElement.setAttribute(key, params[key]);
-        break;
+      case 'for':
+      case 'style': {
+        newElement.setAttribute(key, params[key])
+        break
       }
-      case "children": {
+      case 'children': {
         for (let i = 0; i < params.children.length; i++) {
-          newElement.appendChild(params.children[i]);
+          newElement.appendChild(params.children[i])
         }
-        break;
+        break
       }
       default: {
-        newElement[key] = params[key];
-        break;
+        newElement[key] = params[key]
+        break
       }
     }
-  });
-  return newElement;
-};
+  })
+  return newElement
+}
 
 const onSearchButton = () => {
-  error.innerHTML = "";
-  clearAutocomplete();
-};
+  error.innerHTML = ''
+  clearAutocomplete()
+}
 
 const clearAutocomplete = () => {
-  autocompleteContainer.innerHTML = "";
-  autocompleteContainer.classList.remove("active");
-};
+  autocompleteContainer.innerHTML = ''
+  autocompleteContainer.classList.remove('active')
+}
 
 const onChange = (event) => {
   if (event.target.value.length === 0) {
-    clearAutocomplete();
-    return;
+    clearAutocomplete()
+    return
   }
-  error.innerHTML = "";
+  error.innerHTML = ''
   fetch(
-    "https://api.github.com/search/repositories?per_page=5&q=" +
+    'https://api.github.com/search/repositories?per_page=5&q=' +
       event.target.value
   )
     .then((res) => {
       if (res.ok) {
-        return res.json();
+        return res.json()
       }
-      return Promise.reject(res);
+      return Promise.reject(res)
     })
     .then((response) => {
-      const { items } = response;
+      const { items } = response
       if (Array.isArray(items) && items.length === 0) {
-        error.style.display = "block";
-        error.innerHTML = "Нет такого репозитория";
-        clearAutocomplete();
+        error.style.display = 'block'
+        error.innerHTML = 'Нет такого репозитория'
+        clearAutocomplete()
       } else {
-        createAutocompleteList(items);
+        createAutocompleteList(items)
       }
     })
     .catch((err) => {
-      error.style.display = "block";
-      error.innerHTML = "Проблема слишком много запросов";
-    });
-};
+      error.style.display = 'block'
+      error.innerHTML = 'Проблема слишком много запросов'
+    })
+}
 
 const removeListItem = (itemId) => {
-  savedList.splice(itemId, 1);
-  createSavedList();
-};
+  savedList.splice(itemId, 1)
+  createSavedList()
+}
 
 const createSavedList = () => {
-  inputSearch.value = "";
-  clearAutocomplete();
-  listContainer.innerHTML = "";
+  inputSearch.value = ''
+  clearAutocomplete()
+  listContainer.innerHTML = ''
   savedList.forEach((el, idx) => {
-    const savedItem = createDOMElement("div", {
-      classList: ["list-item"],
+    const savedItem = createDOMElement('div', {
+      classList: ['list-item'],
       children: [
-        createDOMElement("div", {
-          classList: ["item-props"],
+        createDOMElement('div', {
+          classList: ['item-props'],
           children: [
-            createDOMElement("div", {
-              classList: ["item-name"],
+            createDOMElement('div', {
+              classList: ['item-name'],
               children: [
-                createDOMElement("span", {
-                  innerText: "Название",
+                createDOMElement('span', {
+                  innerText: 'Название'
                 }),
-                createDOMElement("span", {
-                  innerText: el.name,
-                }),
-              ],
+                createDOMElement('span', {
+                  innerText: el.name
+                })
+              ]
             }),
-            createDOMElement("div", {
-              classList: ["item-owner"],
+            createDOMElement('div', {
+              classList: ['item-owner'],
               children: [
-                createDOMElement("span", {
-                  innerText: "Владелец",
+                createDOMElement('span', {
+                  innerText: 'Владелец'
                 }),
-                createDOMElement("span", {
-                  innerText: el.login,
-                }),
-              ],
+                createDOMElement('span', {
+                  innerText: el.login
+                })
+              ]
             }),
-            createDOMElement("div", {
-              classList: ["item-stars"],
+            createDOMElement('div', {
+              classList: ['item-stars'],
               children: [
-                createDOMElement("span", {
-                  innerText: "Звезд",
+                createDOMElement('span', {
+                  innerText: 'Звезд'
                 }),
-                createDOMElement("span", {
-                  innerText: el.stargazers_count,
-                }),
-              ],
-            }),
-          ],
+                createDOMElement('span', {
+                  innerText: el.stargazers_count
+                })
+              ]
+            })
+          ]
         }),
-        createDOMElement("div", {
-          classList: ["item-trash"],
+        createDOMElement('div', {
+          classList: ['item-trash'],
           onclick: () => removeListItem(idx),
           children: [
-            createDOMElement("img", {
-              classList: ["trash"],
-              src: "./trash.svg",
-              alt: "урна",
-            }),
-          ],
-        }),
-      ],
-    });
-    listContainer.appendChild(savedItem);
-  });
-};
+            createDOMElement('img', {
+              classList: ['trash'],
+              src: './trash.svg',
+              alt: 'урна'
+            })
+          ]
+        })
+      ]
+    })
+    listContainer.appendChild(savedItem)
+  })
+}
 
 const createAutocompleteEl = () => {
   searchList.forEach((el) => {
-    const searchedItem = createDOMElement("span", {
-      classList: ["auto-item"],
+    const searchedItem = createDOMElement('span', {
+      classList: ['auto-item'],
       innerHTML: el.name,
-      tabIndex: "0",
+      tabIndex: '0',
       onclick: (event) => {
-        savedList.push(el);
-        createSavedList(event);
+        savedList.push(el)
+        createSavedList(event)
       },
       onkeyup: (event) => {
         if (event.keyCode === 13) {
-          savedList.push(el);
-          createSavedList(event);
+          savedList.push(el)
+          createSavedList(event)
         }
-      },
-    });
-    autocompleteContainer.appendChild(searchedItem);
-  });
-};
+      }
+    })
+    autocompleteContainer.appendChild(searchedItem)
+  })
+}
 
 const createAutocompleteList = (items) => {
-  clearAutocomplete();
-  searchList.length = 0;
+  clearAutocomplete()
+  searchList.length = 0
   items.forEach((item) => {
     const {
       name,
       owner: { login },
-      stargazers_count,
-    } = item;
+      stargazers_count
+    } = item
 
     searchList.push({
       name,
       login,
-      stargazers_count,
-    });
-  });
+      stargazers_count
+    })
+  })
 
-  autocompleteContainer.classList.add("active");
-  inputSearch.insertAdjacentElement("afterend", autocompleteContainer);
-  createAutocompleteEl();
-};
+  autocompleteContainer.classList.add('active')
+  inputSearch.insertAdjacentElement('afterend', autocompleteContainer)
+  createAutocompleteEl()
+}
 
-const onChangeDebounce = debounce(onChange, 180);
+const onChangeDebounce = debounce(onChange, 180)
 
-inputSearch.addEventListener("keyup", onChangeDebounce);
-inputSearch.addEventListener("search", onSearchButton);
+inputSearch.addEventListener('keyup', onChangeDebounce)
+inputSearch.addEventListener('search', onSearchButton)
